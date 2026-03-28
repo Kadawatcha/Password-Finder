@@ -8,9 +8,15 @@ Ce projet a été réalisé **uniquement pour le plaisir** et dans un but éduca
 
 ### Ce que j'ai appris
 
-Le développement de ce simulateur m'a permis d'explorer et de découvrir plusieurs concepts intéressants en programmation :
-- **La gestion de tâches multiprocesseurs** : Utilisation du module `multiprocessing` pour répartir la charge de calcul sur plusieurs cœurs du processeur, améliorant ainsi considérablement la vitesse de recherche.
-- **Les boucles de boucles "interlop"** : Utilisation de `itertools.product` pour générer des combinaisons de caractères de manière efficace.
+Le développement de ce simulateur a été un excellent moyen d'explorer plusieurs concepts importants du monde actuel de la performance logicielle (enfin je crois ^^ ) :
+
+- **La puissance du Multiprocessing** : Utilisation du module `multiprocessing` pour exploiter plusieurs cœurs du processeur et augmenter considérablement la vitesse de recherche.
+- **La gestion des combinaisons** : Découverte de `itertools.product` pour générer des millions de possibilités à la volée de manière efficace.
+- **L'optimisation des ressources** : Apprendre à structurer une application avec le `threading` pour conserver une interface fluide pendant les calculs lourds en arrière-plan.
+
+**Quelques conclusions plus personnelles :**
+- J'ai bien compris qu'un mot de passe *longggggggggggg* est vraiment plus sécurisé qu'un mot de passe court (et bien plus sûr que "1234").
+- J'ai pu redécouvrir les joies de la création d'interface avec `Tkinter`, une bibliothèque qui reste... disons, un peu *vintage* :}
 
 Bien que je ne connaisse pas encore tout le code par cœur, je suis confiant dans le fait que si je devais le retravailler, je n'aurais aucun mal à m'y retrouver et à me rappeler son principe de fonctionnement grâce à sa structure.
 

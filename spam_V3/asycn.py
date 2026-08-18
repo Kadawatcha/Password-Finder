@@ -44,7 +44,10 @@ async def main():
             
             # Requetes TODO appeller la fonction de recherche dynamique nom utilisateur / mdp
             # Au lieu de variables de bases statiques que nous ne sommes pas censés connaitres
-            statut = await send_request(username="admin", password="secret")
+            username = 'admin'
+            password = 'secret'
+            
+            statut = await send_request(username=username, password=password)
             
             # Pause pour ne pas saturer la machine
             await asyncio.sleep(0.1) 
@@ -52,9 +55,11 @@ async def main():
             # Analyse des statuts
             if statut == 200:      
                 sys.stdout.write("\r" + " " * 50 + "\r")                                                                      
-                print("✅ Succès ! Mot de passe et user correct") 
+                print(f"✅ tentatives : {tentatives}")
+                print(f"👤 Login : {username}")
+                print(f"🔑 MDP   : {password}")
                 break
-                
+              
             elif statut == 404: 
                 sys.stdout.write("\r" + " " * 50 + "\r")
                 print('❌ 404')                                                                         

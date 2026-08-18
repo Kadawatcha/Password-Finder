@@ -1,7 +1,7 @@
 '''VERSION SYNCHRONE : "LENTE" : ENVOIE REQUETE / ATTENDS REPONSE '''
 
 import requests                                                                              
-                                                                                                 
+import time                                                                        
 # 1. L'URL cible (l'endroit où les données sont envoyées)                   
 url = "http://127.0.0.1:8000/login" # Exemple d'URL de votre serveur local      
 # Cela doit etre l'url POST qui sera enevoyée quand on appuiera sur le bouton     
@@ -52,7 +52,11 @@ while True:
         elif statut == 401 or statut == 403:                                                         
             print("🔒 Accès refusé (Non autorisé).")                                                 
         else:                                                                                        
-            print(f"⚠️ Autre code reçu : {statut}")                                         
+            print(f"⚠️ Autre code reçu : {statut}")   
+            
+        time.sleep(15) # Comme teste meme id a chaque fois il vaudrait mieux executer 1x 
+        # sleep pour moins spam la console
+        # voir async pour les tests de recherche de mots de passe dynamique                                       
                                                                                                  
     # Si le serveur répond en JSON (ce qui est très courant aujourd'hui)                     
         try:                                                                                     

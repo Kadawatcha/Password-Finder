@@ -5,8 +5,6 @@ Pour les commentaires spécifiques a des variables "de base" voir /spam_V3/sync.
 import httpx     
 import asyncio
 import sys # pour faire joli dans le terminal
-from requests import Response # biblio synchrone oui mais utilisée uniquement pour le type 
-
 
 CHARGEMENT = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
 
@@ -17,51 +15,66 @@ async def send_request() -> int: # renvoie un entier
         "password": "123456"                                                           
     }
     headers = {                                                                                                             
-            "User-Agent": "Mon-Script-Asynchrone-V2",                                                                               
-            "Accept": "text/html,application/xhtml+xml"                                                                             
-        }     
+        "User-Agent": "Mon-Script-Asynchrone-V2",                                                                               
+        "Accept": "text/html,application/xhtml+xml"                                                                             
+    }     
     
+    # Création du client asynchrone httpx
     async with httpx.AsyncClient() as client:
-        reponse: Response = await client.post(url, datas=donnees) #hearders=headers
-        # Afficher le dictionnaire complet des en-têtes renvoyés par le serveur                                                 
-        # print("En-têtes reçus :", reponse.headers)  
+        # Correction : 'data' au lieu de 'datas'
+        reponse = await client.post(url, data=donnees, headers=headers) 
         statut = reponse.status_code                                                
         return statut
                                                                          
 async def main():
     print('🚀 Démarrage du script...')
+    
+    # FIX: Initialisation des variables AVANT la boucle
+    compteur_animation = 0
+    tentatives = 0
+    
     while True:
         try:
-            
+            # Gestion de l'animation sur une seule ligne
             symbole = CHARGEMENT[compteur_animation % len(CHARGEMENT)]
             tentatives += 1
         
-        #    \r remet le curseur au début de la ligne, end="" évite le saut de ligne
             sys.stdout.write(f"\r{symbole} Recherche en cours... Tentative n°{tentatives}")
             sys.stdout.flush()
             compteur_animation += 1
             
+            # Envoi de la requête
             statut = await send_request()
-            await asyncio.sleep(0.1) # eviter de faire planter le pc de la ménagère 
+            
+            # Pause pour ne pas saturer la machine
+            await asyncio.sleep(0.1) 
+            
+            # Analyse des statuts
             if statut == 200:      
                 sys.stdout.write("\r" + " " * 50 + "\r")                                                                      
                 print("✅ Succès ! Mot de passe et user correct") 
                 break
+                
             elif statut == 404: 
-                print('404')                                                                         
+                sys.stdout.write("\r" + " " * 50 + "\r")
+                print('❌ Erreur 404 : Page non trouvée.')                                                                         
                 break                  
+                
             elif statut == 401:                                                   
-                pass           
+                pass # C'est un mauvais mot de passe, l'animation continue au prochain tour          
+                
             elif statut == 403:
-                print('403 - Interdit')
+                sys.stdout.write("\r" + " " * 50 + "\r")
+                print('🔒 Erreur 403 : Accès interdit (IP bloquée ou pare-feu).')
                 break                                      
+                
             else:                                                                                        
                 sys.stdout.write("\r" + " " * 50 + "\r")
                 print(f"⚠️ Autre code reçu : {statut}")   
                 await asyncio.sleep(2) # Pause plus longue en cas d'anomalie
                           
-                        
         except Exception as e:
+            sys.stdout.write("\r" + " " * 50 + "\r")
             print(f"Erreur réseau détectée : {e}")
             # Pause plus longue en cas d'erreur
             await asyncio.sleep(10)

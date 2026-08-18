@@ -10,6 +10,8 @@ from multiprocessing.synchronize import Event as EventType
 from multiprocessing.sharedctypes import Synchronized
 
 
+
+
 """
 TABLEAU DE COMPLEXITÉ 
 Basé sur un alphabet de 95 caractères (Lettres + Chiffres + Symboles + Espace)
@@ -24,6 +26,9 @@ L = 6 : ~735 Milliards ............ (Plusieurs heures / jours)
 
 Gain Multiprocessing : Temps total / Nombre de cœurs actifs
 """
+
+
+
 
 def initialiser_travailleur(compteur_init, stop_event_init):
     """ Initialise les variables partagées pour chaque processus travailleur au démarrage """

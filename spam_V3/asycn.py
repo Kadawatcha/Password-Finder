@@ -14,15 +14,14 @@ async def send_request() -> int: # renvoie un entier
         "username": "fake_user",                                                    
         "password": "123456"                                                           
     }
-    headers = {                                                                                                             
+    '''headers = {                                                                                                             
         "User-Agent": "Mon-Script-Asynchrone-V2",                                                                               
         "Accept": "text/html,application/xhtml+xml"                                                                             
-    }     
+    }  '''   
     
     # Création du client asynchrone httpx
     async with httpx.AsyncClient() as client:
-        # Correction : 'data' au lieu de 'datas'
-        reponse = await client.post(url, data=donnees, headers=headers) 
+        reponse = await client.post(url, data=donnees ) # headers=headers 
         statut = reponse.status_code                                                
         return statut
                                                                          
@@ -35,7 +34,7 @@ async def main():
     
     while True:
         try:
-            # Gestion de l'animation sur une seule ligne
+            # Gestion de l'animation
             symbole = CHARGEMENT[compteur_animation % len(CHARGEMENT)]
             tentatives += 1
         
@@ -57,7 +56,7 @@ async def main():
                 
             elif statut == 404: 
                 sys.stdout.write("\r" + " " * 50 + "\r")
-                print('❌ Erreur 404 : Page non trouvée.')                                                                         
+                print('❌ 404')                                                                         
                 break                  
                 
             elif statut == 401:                                                   
@@ -65,7 +64,7 @@ async def main():
                 
             elif statut == 403:
                 sys.stdout.write("\r" + " " * 50 + "\r")
-                print('🔒 Erreur 403 : Accès interdit (IP bloquée ou pare-feu).')
+                print('🔒 Erreur 403 : Accès interdit (IP bloquée ou pare-feu)')
                 break                                      
                 
             else:                                                                                        

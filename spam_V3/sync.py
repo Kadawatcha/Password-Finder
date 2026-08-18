@@ -46,7 +46,7 @@ while True:
         print(f"Code de statut : {statut}")    
         # 3. On peut utiliser ce statut dans des conditions                                          
         if statut == 200:                                                                            
-            print("✅ Succès ! Mot de passe et user correct")                                       
+            print("✅ Succès ! Mot de passe et user correct") # les id et mdp sont dans le serveur flask ligne 44                                     
         elif statut == 404:                                                                          
             print("❌ Erreur 404 : La page n'a pas été trouvée.")                                    
         elif statut == 401 or statut == 403:                                                         

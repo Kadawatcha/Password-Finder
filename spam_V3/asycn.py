@@ -19,9 +19,18 @@ async def send_request():
     
     async with httpx.AsyncClient() as client:
         reponse: Response = await client.post(url, datas=donnees) #hearders=headers
-        print(f"Statut : {reponse.status_code}")  
         
         # Afficher le dictionnaire complet des en-têtes renvoyés par le serveur                                                 
-        # print("En-têtes reçus :", reponse.headers)                   
+        # print("En-têtes reçus :", reponse.headers)   
+        
+        statut = reponse.status_code                                                
+        if statut == 200:                                                                            
+            print("✅ Succès ! Mot de passe et user correct") 
+        elif statut == 404:                                                                          
+            print("❌ Erreur 404 : La page n'a pas été trouvée.")                                    
+        elif statut == 401 or statut == 403:                                                         
+            print("🔒 Accès refusé (Non autorisé).")                                                 
+        else:                                                                                        
+            print(f"⚠️ Autre code reçu : {statut}")   
                                                                          
                                                                                                  

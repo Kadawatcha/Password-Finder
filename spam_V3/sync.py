@@ -10,8 +10,8 @@ url = "http://127.0.0.1:8000/login" # Exemple d'URL de votre serveur local
 # 2. Les données à envoyer (sous forme de dictionnaire Python)                               
 # Les clés ('username', 'password') doivent correspondre à ce que le serveur attend          
 donnees = {                                                                                  
-        "username": "fake_user",                                                    
-        "password": "123456"                                                           
+        "username": "admin",                                                    
+        "password": "secret"                                                           
     }                          
 
 # Les clés username/password se ditue dans le champ "name" du fichier html    

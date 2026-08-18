@@ -8,11 +8,11 @@ import sys # pour faire joli dans le terminal
 
 CHARGEMENT = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
 
-async def send_request() -> int: # renvoie un entier
+async def send_request(username: str, password: str) -> int: # renvoie un entier
     url = "http://127.0.0.1:8000/login"
     donnees = {                                                                                  
-        "username": "fake_user",                                                    
-        "password": "123456"                                                           
+        "username": username,                                                    
+        "password": password                                                           
     }
     '''headers = {                                                                                                             
         "User-Agent": "Mon-Script-Asynchrone-V2",                                                                               
@@ -42,8 +42,9 @@ async def main():
             sys.stdout.flush()
             compteur_animation += 1
             
-            # Envoi de la requête
-            statut = await send_request()
+            # Requetes TODO appeller la fonction de recherche dynamique nom utilisateur / mdp
+            # Au lieu de variables de bases statiques que nous ne sommes pas censés connaitres
+            statut = await send_request(username="admin", password="secret")
             
             # Pause pour ne pas saturer la machine
             await asyncio.sleep(0.1) 

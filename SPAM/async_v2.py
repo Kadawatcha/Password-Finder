@@ -91,7 +91,7 @@ async def main():
     evenement_succes = asyncio.Event()
 
     # 50 à 100 (tester si serv crash ou non)
-    semaphore = asyncio.Semaphore(100)
+    semaphore = asyncio.Semaphore(450)
     
     # LE USERNAME EST CONNU
     USERNAME_CONNU = "admin"

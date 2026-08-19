@@ -38,14 +38,17 @@ def traitement_login():
     # ou par votre script Python 'requests' !                                                
     nom_utilisateur = request.form.get('username')                                           
     mot_de_passe = request.form.get('password')                                              
-                                                                                                 
+    
+    # POUR LE async v2 on ne print pas toutes les tentatives
+    # Trop rapide 
+    # Mais le serveur lui a le temps :)                                               
     print(f"📡 [SERVEUR] Tentative de connexion reçue : {nom_utilisateur} / {mot_de_passe}") 
                                                                                                  
-    # Petite logique de test                                                                 
+    # A moduler                                                                
     if nom_utilisateur == "admin" and mot_de_passe == "secret":                              
         return "Connexion réussie !", 200                                                    
     else:                                                                                    
-        # On renvoie un code 401 (Unauthorized) si c'est faux                                
+        # 401 non autor, voir scripts   pour réaction a cette erreur            
         return "Identifiants incorrects.", 401                                               
           
           
@@ -53,4 +56,7 @@ def traitement_login():
 # Seule diff avec serv_lent (import)                                                                                 
 if __name__ == '__main__':                                                                   
     print("🚀 Serveur de PRODUCTION démarré sur http://127.0.0.1:9000")                                    
-    serve(app, host='127.0.0.1', port=9000, threads=100) # On lui donne 100 threads d'action !
+    serve(app, host='127.0.0.1', port=9000, threads=500) # Donne 100 thread, a augmenter si possible
+    
+    # le semaphore doit etre legerement dessous pour éviter de surcharger au cas ou
+    # semaphore uniquement valable pour le async_v2.py

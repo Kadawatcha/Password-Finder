@@ -12,7 +12,7 @@ import time
 CHARGEMENT = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
 
 async def send_request(client: httpx.AsyncClient, username: str, password: str) -> int: # renvoie un entier
-    url = "http://127.0.0"
+    url = "http://127.0.0.1:8000/login"
     donnees = {                                                                                  
         "username": username,                                                    
         "password": password                                                           
@@ -61,7 +61,7 @@ async def worker_test_password(client, semaphore, username, password, evenement_
         vitesse = stats["tentatives"] / temps_actuel if temps_actuel > 0 else 0
         symbole = CHARGEMENT[stats["tentatives"] % len(CHARGEMENT)]
         
-        sys.stdout.write(f"\r{symbole} [En masse...] | Tentatives: {stats['tentatives']} | Temps: {temps_actuel:.1f}s | Vitesse: {int(vitesse)} mots/s")
+        sys.stdout.write(f"\r{symbole} [En cours...] | Tentatives: {stats['tentatives']} | Temps: {temps_actuel:.1f}s | Vitesse: {int(vitesse)} mots/s")
         sys.stdout.flush()
 
         # Analyse du résultat

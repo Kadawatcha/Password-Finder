@@ -10,5 +10,6 @@
   - Dans le fichier `flask/serv_lent.py`, le port utilisé est le **8000**.
   - Dans le fichier `flask/serv_speed.py`, le port utilisé est le **9000**.
 - Attention également aux ports renseignés dans les fichiers d'attaque : `asycn.py`, `sync.py` et `async_v2.py`.
+- Les noms d'utilisateurs & mots de passe sont codés en brut dans les différents serveurs
 
 Amusez-vous bien !

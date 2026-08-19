@@ -56,7 +56,11 @@ def traitement_login():
 # Seule diff avec serv_lent (import)                                                                                 
 if __name__ == '__main__':                                                                   
     print("🚀 Serveur de PRODUCTION démarré sur http://127.0.0.1:9000")                                    
-    serve(app, host='127.0.0.1', port=9000, threads=500) # Donne 100 thread, a augmenter si possible
+    serve(app, host='127.0.0.1', 
+          port=9000, 
+          threads=500, # Donne 500 thread, a augmenter si possible
+          connection_limit=1000 # pour éviter :waitress:total open connections reached the connection limit, no longer accepting new connections
+        ) 
     
     # le semaphore doit etre legerement dessous pour éviter de surcharger au cas ou
     # semaphore uniquement valable pour le async_v2.py

@@ -12,7 +12,7 @@ import time
 CHARGEMENT = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
 
 async def send_request(client: httpx.AsyncClient, username: str, password: str) -> int: # renvoie un entier
-    url = "http://127.0.0.1:8000/login"
+    url = "http://127.0.0.1:9000/login"
     donnees = {                                                                                  
         "username": username,                                                    
         "password": password                                                           

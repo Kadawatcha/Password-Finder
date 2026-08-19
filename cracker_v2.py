@@ -4,7 +4,6 @@ import itertools               # Logique : génération de combinaisons "à la v
 import string                  # Alphabet, chiffres et symboles
 import time                    # Pour le chronomètre et le calcul de vitesse
 import threading               # Pour que l'interface ne freeze pas pendant le calcul
-import ctypes                  # Pour faire clignoter la barre des tâches 
 # autres (pour anotations de types)
 from multiprocessing.synchronize import Event as EventType
 from multiprocessing.sharedctypes import Synchronized

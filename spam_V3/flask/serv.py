@@ -12,7 +12,7 @@ PAGE_HTML = """
     <body>                                                                                       
         <h2>Page de test</h2>                                                                    
         <!-- Le formulaire envoie les données à l'URL /api/login via la méthode POST -->         
-        <form action="/api/login" method="POST">                                                 
+        <form action="/login" method="POST">                                                 
             <label for="user">Utilisateur:</label><br>                                           
             <input type="text" id="user" name="username"><br><br>                                
                                                                                                  

@@ -85,7 +85,7 @@ async def worker_test_password(client, semaphore, username, password, evenement_
 async def main():
     print('🚀 Démarrage du moteur de recherche (async_v2.py)...')
     
-    # Dictionnaires partagés pour les statistiques des workers
+    # Dictionnaires partagés pour les statistiques
     stats = {"tentatives": 0}
     temps_debut = time.perf_counter()
     evenement_succes = asyncio.Event()
@@ -96,10 +96,10 @@ async def main():
     # LE USERNAME EST CONNU
     USERNAME_CONNU = "admin"
     
-    # Initialisation de notre générateur de mots de passe
+    # Initialisation 
     moteur_de_recherche = search_password()
     
-    # OPTIMISATION MAJEURE : On ouvre LE client unique AVANT la boucle
+    # On ouvre le client unique avant la boucle
     async with httpx.AsyncClient() as client:
         taches_en_cours = []
         

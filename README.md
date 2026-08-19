@@ -26,6 +26,7 @@ Le programme tente de retrouver un mot de passe en testant toutes les combinaiso
 
 - **cracker_v1.py** : Version de base, mono-cœur.
 - **cracker_v2.py** : Version avancée utilisant le multiprocessus pour des performances accrues, avec une interface plus riche (vitesse en mots/sec, barre de progression visuelle, etc.).
+- **SPAM** : Référez-vous au README.md situé à l'intérieur
 
 ## Prérequis
 

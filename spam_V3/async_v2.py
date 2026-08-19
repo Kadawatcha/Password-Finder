@@ -92,7 +92,7 @@ async def main():
     
     # OPTIMISATION MULTI-REQUÊTES : Autorise un maximum de 30 requêtes SIMULTANÉES
     # Tu peux monter à 50 ou 100 si ton serveur local encaisse sans crash (erreur 0)
-    semaphore = asyncio.Semaphore(30)
+    semaphore = asyncio.Semaphore(100)
     
     # LE USERNAME EST CONNU
     USERNAME_CONNU = "admin"

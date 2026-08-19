@@ -89,9 +89,8 @@ async def main():
     stats = {"tentatives": 0}
     temps_debut = time.perf_counter()
     evenement_succes = asyncio.Event()
-    
-    # OPTIMISATION MULTI-REQUÊTES : Autorise un maximum de 30 requêtes SIMULTANÉES
-    # Tu peux monter à 50 ou 100 si ton serveur local encaisse sans crash (erreur 0)
+
+    # 50 à 100 (tester si serv crash ou non)
     semaphore = asyncio.Semaphore(100)
     
     # LE USERNAME EST CONNU

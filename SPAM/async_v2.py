@@ -83,7 +83,7 @@ async def worker_test_password(client, semaphore, username, password, evenement_
                 print("🔒 Erreur 403 : Accès interdit (IP bloquée ou pare-feu)")
                                                                          
 async def main():
-    print('🚀 Démarrage du moteur de recherche ULTRA-PARALLÈLE (async.py)...')
+    print('🚀 Démarrage du moteur de recherche (async_v2.py)...')
     
     # Dictionnaires partagés pour les statistiques des workers
     stats = {"tentatives": 0}

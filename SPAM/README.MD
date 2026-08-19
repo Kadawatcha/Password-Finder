@@ -8,8 +8,8 @@
 - Lisez les commentaires : il y a quelques paramètres à modifier si vous souhaitez optimiser le code (à ajuster au fur et à mesure selon les performances de votre PC).
 - Attention aux ports utilisés par les serveurs Flask :
   - Dans le fichier `flask/serv_lent.py`, le port utilisé est le **8000**.
-  - Dans le fichier `flask/serv_speed.py`, le port utilisé est le **9000**.
+  - Dans le fichier `flask/serv_speed.py`, le port utilisé est le **9000**. **Note :** Ce serveur ("speed") est d'ailleurs beaucoup mieux optimisé pour fonctionner avec le script `async_v2.py`.
 - Attention également aux ports renseignés dans les fichiers d'attaque : `asycn.py`, `sync.py` et `async_v2.py`.
-- Les noms d'utilisateurs & mots de passe sont codés en brut dans les différents serveurs
 
-Amusez-vous bien !
+
+Amusez-vous bien ; )
